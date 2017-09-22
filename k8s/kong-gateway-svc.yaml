@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong-gateway
+  namespace: new-kong-gateway
+  labels:
+    project: kong
+    app: kong-gateway
+    provider: thlaegler
+    group: org.laegler.image.kong
+spec:
+  selector:
+    app: kong-gateway
+  type: NodePort
+  ports:
+  - name: api-http
+    port: 8000
+  - name: api-https
+    port: 8443
+  - name: admin-http
+    port: 8001
+  - name: admin-https
+    port: 8444

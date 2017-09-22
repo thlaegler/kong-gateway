@@ -1,0 +1,68 @@
+version: '2.1'
+services:
+  kong-postgres:
+    image: postgres:9.6
+    environment:
+    - POSTGRES_USER=kong
+    - POSTGRES_PASSWORD=kong
+    - POSTGRES_DB=kong
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+    - new-kong-gateway
+  kong-gateway:
+    image: gcr.io/example/kong-gateway:1.0
+    command: kong migrations up
+    depends_on:
+      kong-postgres:
+        condition: service_healthy
+    environment:
+    - KONG_PROXY_PORT=8000
+    - KONG_ADMIN_PORT=8001
+    - KONG_CUSTOM_PLUGINS=xmd-header-enforcer
+    - KONG_DATABASE=postgres
+    - KONG_PG_DATABASE=kong
+    - KONG_PG_HOST=kong-postgres
+    - KONG_PG_PORT=kong
+    - KONG_PG_USER=kong
+    - KONG_PG_PASSWORD=kong
+    expose:
+    - 8000
+    - 8001
+    - 8443
+    - 8444
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -I -s -L http://127.0.0.1:8000 || exit 1
+      interval: 5s
+      retries: 10
+    networks:
+    - new-kong-gateway
+  kong-dashboard:
+    image: pgbi/kong-dashboard:v2
+    depends_on:
+      kong-gateway:
+        condition: service_healthy
+    expose:
+    - 8080
+    networks:
+    - new-kong-gateway
+#  kong-migration:
+#    image: kong
+#    depends_on:
+#      kong-postgres:
+#        condition: service_healthy
+#    environment:
+#    - KONG_DATABASE=kong
+#    - KONG_PG_HOST=kong-postgres
+#    command: kong migrations up
+#    networks:
+#    - new-kong-gateway
+networks:
+  new-kong-gateway: null

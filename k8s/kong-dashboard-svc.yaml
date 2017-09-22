@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kong-dashboard
+  namespace: new-kong-gateway
+  labels:
+    project: kong
+    app: kong-dashboard
+    provider: thlaegler
+    group: org.laegler.image.kong
+spec:
+  selector:
+    app: kong-dashboard
+  type: NodePort
+  ports:
+  - name: http
+    port: 8080

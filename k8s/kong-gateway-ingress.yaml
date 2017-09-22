@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kong-gateway
+  namespace: new-kong-gateway
+  labels:
+    project: kong
+    app: kong-gateway
+    provider: thlaegler
+    group: org.laegler.image.kong
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.allow-http: 'true'
+spec:
+#  backend:
+#    serviceName: kong-gateway
+#    servicePort: 8000
+  rules:
+  - http:
+      paths:
+      - path: /_kong/admin/*
+        backend:
+          serviceName: kong-gateway
+          servicePort: 8001
+      - path: /v2/*
+        backend:
+          serviceName: kong-gateway
+          servicePort: 8000
+      - path: /_kong/dasboard/*
+        backend:
+          serviceName: kong-dashboard
+          servicePort: 8080

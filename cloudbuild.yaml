@@ -1,0 +1,36 @@
+steps:
+
+# Docker build
+- id: docker-build
+  name: gcr.io/cloud-builders/docker
+  dir: kong-gateway
+  args: ['build', '--tag=gcr.io/$PROJECT_ID/kong-gateway:1.0', '.']
+
+# Docker push
+- id: docker-push
+  name: gcr.io/cloud-builders/docker
+  dir: kong-gateway
+  waitFor: ['docker-build']
+  args: ['push', 'gcr.io/$PROJECT_ID/kong-gateway:1.0']
+  
+# Kubernetes deploy
+- id: kube-deploy
+  name: gcr.io/cloud-builders/gcloud
+  dir: kong-gateway
+  waitFor: ['docker-push']
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    gcloud components install kubectl
+    gsutil cp gs://my-example-bucket/kubeconfig .
+    gsutil cp gs://my-example-bucket/252882298160-compute.json .
+    export KUBECONFIG=kubeconfig
+    export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
+    gcloud config set compute/zone australia-southeast1-c 
+    gcloud container clusters get-credentials my-example-cluster
+    kubectl apply -f k8s
+
+# --namespace=new-kong-gateway
+
+images: ['gcr.io/$PROJECT_ID/kong-gateway:1.0']

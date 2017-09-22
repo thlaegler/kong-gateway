@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kong-dashboard
+  namespace: new-kong-gateway
+  labels:
+    project: kong
+    app: kong-dashboard
+    provider: thlaegler
+    group: org.laegler.image.kong
+spec:
+  template:
+    metadata:
+      labels:
+        app: kong-dashboard
+    spec:
+      containers:
+      - name: kong-dashboard
+        image: pgbi/kong-dashboard:v2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 10
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

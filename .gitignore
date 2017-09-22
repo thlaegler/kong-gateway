@@ -1,0 +1,29 @@
+*.class
+
+.settings/
+generated/
+target/
+bin/
+build/
+.gradle/
+.editorconfig/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Intellij
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea/*.xml
+
+# Eclipse
+.classpath
+.project
+.settings
+.springBeans
+
+
