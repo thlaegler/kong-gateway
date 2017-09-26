@@ -18,7 +18,7 @@ fi
 #export PGPASSWORD=$KONG_PG_PASSWORD
 
 # Start the DB proxy
-./cloud_sql_proxy -instances=example:australia-southeast1:platform-staging-db-postgresql=tcp:5432 &
+./cloud_sql_proxy -instances=example:australia-southeast1:example-db-postgresql=tcp:5432 &
 
 # debug-only
 # ----------
