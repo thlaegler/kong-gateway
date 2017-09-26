@@ -24,7 +24,7 @@ services:
     environment:
     - KONG_PROXY_PORT=8000
     - KONG_ADMIN_PORT=8001
-    - KONG_CUSTOM_PLUGINS=xmd-header-enforcer
+    - KONG_CUSTOM_PLUGINS=example-plugin
     - KONG_DATABASE=postgres
     - KONG_PG_DATABASE=kong
     - KONG_PG_HOST=kong-postgres
